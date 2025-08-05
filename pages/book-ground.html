@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Sports Grounds</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/pages.css">
+    <link rel="stylesheet" href="../css/components/navbar.css">
+    <link rel="stylesheet" href="../css/pages/ground.css">
+</head>
+<body>
+    <!-- Navbar Component -->
+    <div id="navbar-container"></div>
+
+    <div class="hero-section">
+        <h1>Book Sports Grounds</h1>
+        <p>Find and reserve the perfect sports facility for your game</p>
+    </div>
+
+    <div class="search-section">
+        <div class="search-grid">
+            <div class="search-field">
+                <label for="search-grounds">Search Grounds</label>
+                <input type="text" id="search-grounds" class="search-input" placeholder="Search by ground name...">
+            </div>
+            <div class="search-field">
+                <label for="location">Select Location</label>
+                <select id="location" class="search-input">
+                    <option value="">All locations</option>
+                    <option value="">Colombo 7</option>
+                    <option value="">Colombo 6</option>
+                    <option value="">Colombo 5</option>
+                    <option value="">Colombo 4</option>
+                    <option value="">Colombo 3</option>
+                    <option value="">Colombo 2</option>
+                    
+                </select>
+            </div>
+            <div class="search-field">
+                <label for="sport-type">Sport Type</label>
+                <select id="sport-type" class="search-input">
+                    <option value="">All sports</option>
+                    <option value="">Cricket</option>
+                    <option value="">Badminton</option>
+                    <option value="">Tennis</option>
+                    <option value="">Basketball</option>
+                </select>
+            </div>
+            <button class="search-btn" onclick="searchGrounds()">🔍</button>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="results-header">
+            <h2 id="results-count">Loading...</h2>
+            <button class="filter-btn">
+                <span>⚙️</span>
+                Filters
+            </button>
+        </div>
+
+        <div class="grounds-grid" id="grounds-container">
+            <div class="loading">Loading sports grounds...</div>
+        </div>
+    </div>
+
+    <script src="/js/pages/book-ground.js"></script>
+    <script src="/js/components/navbar.js"></script>
+    <script>
+        // Load the shared navbar dynamically
+        fetch('/pages/components/navbar.html')
+            .then(res => res.text())
+            .then(data => {
+                document.getElementById('navbar-container').innerHTML = data;
+                new Navbar(); // Initialize navbar behavior
+            });
+
+        // Global logout function
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = '/';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,267 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shop - SportHub</title>
+  <link rel="stylesheet" href="../css/main.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <link rel="stylesheet" href="../css/pages.css" />
+  <link rel="stylesheet" href="/css/components/navbar.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="../css/pages/shop.css" />
+  
+</head>
+<body>
+  <!-- Navbar Component -->
+  <div id="navbar-container"></div>
+  <main class="shop-container">
+    <header>
+      <h1>Sports Equipment Shop</h1>
+      <p>Quality sports gear from top brands for all your athletic needs</p>
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search products..." />
+        <select id="categoryFilter">
+          <option value="">All categories</option>
+          <option value="Basketball">Basketball</option>
+          <option value="Cricket">Cricket</option>
+          <option value="Badminton">Badminton</option>
+          <option value="Tennis">Tennis</option>
+          <option value="Football">Football</option>
+        </select>
+        <select id="brandFilter">
+          <option value="">All brands</option>
+          <option value="Nike">Nike</option>
+          <option value="Spalding">Spalding</option>
+          <option value="Speedo">Speedo</option>
+          <option value="Wilson">Wilson</option>
+          <option value="Li-Ning">Li-Ning</option>
+          <option value="Stanford">Stanford</option>
+          <option value="Under Armour">Under Armour</option>
+          <option value="Adidas">Adidas</option>
+        </select>
+        <select id="priceFilter">
+          <option value="">Price range</option>
+          <option value="0-10000">Rs.0–Rs.10,000</option>
+          <option value="10000-20000">Rs.10,000–Rs.20,000</option>
+          <option value="20000-30000">Rs.20,000–Rs.30,000</option>
+          <option value="30000-40000">Rs.30,000–Rs.40,000</option>
+          <option value="40000-50000">Rs.40,000–Rs.50,000</option>
+          <option value="50000+">Above Rs.50,000</option>
+        </select>
+      </div>
+    </header>
+
+    <h2 id="productCount">Products (6)</h2>
+    
+    <!-- Added the missing product grid container -->
+    <div id="productGrid" class="product-grid"></div>
+    
+  </main>
+
+  <script src="../js/utils.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/pages/shop.js"></script>
+  <script src="/js/components/navbar.js"></script>
+  <script>
+    // Load navbar
+    fetch('/pages/components/navbar.html')
+      .then(res => res.text())
+      .then(data => {
+        document.getElementById('navbar-container').innerHTML = data;
+        new Navbar();
+      })
+      .catch(err => console.log('Navbar not found, continuing without it'));
+
+    function logout() {
+      localStorage.removeItem('currentUser');
+      window.location.href = '/';
+    }
+  </script>
+  <script>
+    const products = [
+      {
+        title: "Badminton Racket",
+        brand: "Li-Ning",
+        category: "Badminton",
+        rating: 4.5,
+        reviews: 128,
+        price: 6500,
+        description: "Smash harder, move faster – engineered for champions",
+        features: ["Flexible", "Lightweight", "Beginner"],
+        image: "images/badminton.jpg"
+      },
+      {
+        title: "Spalding Basketball [Pulse]",
+        brand: "Spalding",
+        category: "Basketball",
+        rating: 4.6,
+        reviews: 189,
+        price: 2500,
+        description: "Durable leather basketball for indoor and outdoor play",
+        features: ["Size 7", "Indoor/Outdoor", "High Grip"],
+        image: "images/basketball.jpg"
+      },
+      {
+        title: "Original English Willow Cricket Bat",
+        brand: "Stanford",
+        category: "Cricket",
+        rating: 4.7,
+        reviews: 312,
+        price: 125000,
+        description: "Best Quality Bat for Beginner use",
+        features: ["Weight 1.13kg", "Best Quality", "Leather"],
+        image: "images/cricket bat.jpg"
+      },
+      {
+        title: "Professional Football",
+        brand: "Nike",
+        category: "Football",
+        rating: 4.8,
+        reviews: 234,
+        price: 3000,
+        description: "Professional quality football for competitive matches",
+        features: ["Official Size 5", "FIFA Approved", "Durable Construction"],
+        image: "images/football.jpg"
+      },
+      {
+        title: "Tennis Racket",
+        brand: "Wilson",
+        category: "Tennis",
+        rating: 4.9,
+        reviews: 89,
+        price: 5000,
+        description: "Lightweight and strong racket for power and control",
+        features: ["Graphite Frame", "Shock Absorption", "Pro Grip"],
+        image: "images/tennis-racket.jpg"
+      },
+      {
+        title: "Cricket Helmet",
+        brand: "Adidas",
+        category: "Cricket",
+        rating: 4.4,
+        reviews: 67,
+        price: 7000,
+        description: "Play fearless. Head protection that never backs down",
+        features: ["Stainless Steel Grill", "Moisture-wicking design", "Lightweight"],
+        image: "images/cricket helmet.jpg"
+      }
+    ];
+
+    // Store original products for filtering
+    let filteredProducts = [...products];
+
+    function renderProducts(productsToRender) {
+      const productGrid = document.getElementById("productGrid");
+      productGrid.innerHTML = ""; // Clear existing products
+
+      if (productsToRender.length === 0) {
+        productGrid.innerHTML = '<p style="text-align: center; color: #666; grid-column: 1/-1;">No products found matching your criteria.</p>';
+        updateProductCount(0);
+        return;
+      }
+
+      productsToRender.forEach((product, index) => {
+        const productHTML = `
+          <div class="product-card">
+            <div class="no-image">Product Image</div>
+            <h3 class="product-title">${product.title}</h3>
+            <div class="product-brand">${product.brand}</div>
+            <span class="category-tag">${product.category}</span>
+            <div class="rating">
+              <span class="star">⭐</span>
+              <span class="rating-score">${product.rating}</span>
+              <span class="review-count">(${product.reviews})</span>
+            </div>
+            <div class="price"><span class="current-price">Rs.${product.price.toLocaleString()}.00</span></div>
+            <p class="description">${product.description}</p>
+            <div class="features">
+              ${product.features.map(f => `<span class="feature">${f}</span>`).join('')}
+            </div>
+            <div class="buttons">
+              <button class="icon-button" onclick="toggleWishlist(${index})">🤍</button>
+              <button class="view-btn" onclick="viewProduct(${index})">View Details</button>
+              <button class="buy-btn" onclick="buyProduct(${index})">Buy Now</button>
+            </div>
+          </div>
+        `;
+        productGrid.insertAdjacentHTML("beforeend", productHTML);
+      });
+
+      updateProductCount(productsToRender.length);
+    }
+
+    function updateProductCount(count) {
+      document.getElementById('productCount').textContent = `Products (${count})`;
+    }
+
+    // Filter functions
+    function filterProducts() {
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      const categoryFilter = document.getElementById('categoryFilter').value;
+      const brandFilter = document.getElementById('brandFilter').value;
+      const priceFilter = document.getElementById('priceFilter').value;
+
+      filteredProducts = products.filter(product => {
+        // Search filter
+        const matchesSearch = product.title.toLowerCase().includes(searchTerm) ||
+                            product.description.toLowerCase().includes(searchTerm) ||
+                            product.brand.toLowerCase().includes(searchTerm);
+
+        // Category filter
+        const matchesCategory = !categoryFilter || product.category === categoryFilter;
+
+        // Brand filter
+        const matchesBrand = !brandFilter || product.brand === brandFilter;
+
+        // Price filter
+        let matchesPrice = true;
+        if (priceFilter) {
+          if (priceFilter === '50000+') {
+            matchesPrice = product.price > 50000;
+          } else {
+            const [min, max] = priceFilter.split('-').map(Number);
+            matchesPrice = product.price >= min && product.price <= max;
+          }
+        }
+
+        return matchesSearch && matchesCategory && matchesBrand && matchesPrice;
+      });
+
+      renderProducts(filteredProducts);
+    }
+
+    // Event listeners for filters
+    document.addEventListener("DOMContentLoaded", () => {
+      renderProducts(products);
+
+      // Add event listeners to filters
+      document.getElementById('searchInput').addEventListener('input', filterProducts);
+      document.getElementById('categoryFilter').addEventListener('change', filterProducts);
+      document.getElementById('brandFilter').addEventListener('change', filterProducts);
+      document.getElementById('priceFilter').addEventListener('change', filterProducts);
+    });
+
+    // Button click handlers
+    function toggleWishlist(index) {
+      const button = event.target;
+      button.textContent = button.textContent === '🤍' ? '❤️' : '🤍';
+      console.log('Toggled wishlist for:', filteredProducts[index].title);
+    }
+
+    function viewProduct(index) {
+      console.log('Viewing product:', filteredProducts[index].title);
+      // Add your view product logic here
+      alert(`Viewing details for: ${filteredProducts[index].title}`);
+    }
+
+    function buyProduct(index) {
+      console.log('Buying product:', filteredProducts[index].title);
+      // Add your buy product logic here
+      alert(`Added to cart: ${filteredProducts[index].title}`);
+    }
+  </script>
+
+</body>
+</html>
