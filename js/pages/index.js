@@ -18,7 +18,7 @@ class HomePage {
         this.popularVenues = [
             {
                 id: 1,
-                name: 'City Sports Complex',
+                name: 'Havelock City Sports Complex',
                 type: 'Multi-Sport',
                 rating: 4.9,
                 price: 'Rs 5000/hour',
